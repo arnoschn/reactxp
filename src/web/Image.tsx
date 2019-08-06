@@ -18,7 +18,13 @@ import { Types } from '../common/Interfaces';
 import * as _ from './utils/lodashMini';
 import restyleForInlineText from './utils/restyleForInlineText';
 import Styles from './Styles';
-
+class ImgError extends Error {
+    event: React.SyntheticEvent;
+    constructor(event: React.SyntheticEvent) {
+        super('Image error');
+        this.event = event;
+    }
+}
 const _styles = {
     image: {
         position: 'absolute',
@@ -215,7 +221,7 @@ export class Image extends React.Component<Types.ImageProps, ImageState> {
     componentWillUnmount() {
         this._isMounted = false;
         if (this.state.displayUrl && this.state.xhrRequest) {
-           XhrBlobUrlCache.release(this.props.source);
+            XhrBlobUrlCache.release(this.props.source);
         }
     }
 
@@ -342,7 +348,7 @@ export class Image extends React.Component<Types.ImageProps, ImageState> {
         const isSourceValid = !(typeof source !== 'string' && typeof source !== 'undefined');
 
         // Prepare image source (necessary as iOS implementation also allows objects)
-        assert(isSourceValid, `Types/web/Image only accepts string sources! You passed: ${ source } of type ${ typeof source }`);
+        assert(isSourceValid, `Types/web/Image only accepts string sources! You passed: ${source} of type ${typeof source}`);
 
         let optionalImg: JSX.Element | null = null;
         if (this.state.showImgTag) {
@@ -389,7 +395,7 @@ export class Image extends React.Component<Types.ImageProps, ImageState> {
         // It is necessary to wrap the url in quotes as in url("a.jpg?q=(a and b)").
         // If the url is unquoted and contains paranthesis, e.g. a.jpg?q=(a and b), it will become url(a.jpg?q=(a and b))
         // which will not render on the screen.
-        const backgroundImage = `url("${ this.state.displayUrl }")`;
+        const backgroundImage = `url("${this.state.displayUrl}")`;
 
         // Types doesn't support border styles other than "solid" for images.
         const borderStyle = styles.borderWidth ? 'solid' : 'none';
@@ -450,8 +456,8 @@ export class Image extends React.Component<Types.ImageProps, ImageState> {
         }
     }
 
-    private _imgOnError = () => {
-        this._onError();
+    private _imgOnError = (event: React.SyntheticEvent) => {
+        this._onError(new ImgError(event));
     }
 
     private _onError(err?: Error) {

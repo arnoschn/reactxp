@@ -57,10 +57,10 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
     private _id = _idCounter++;
     private _isMounted = false;
 
-    private _container: HTMLElement | null |   undefined;
+    private _container: HTMLElement | null | undefined;
 
     // State for tracking long presses
-    private _pendingLongPressEvent: React.MouseEvent<any> | undefined;
+    private _pendingLongPressEvent: React.MouseEvent<any> | React.TouchEvent<any> | undefined;
     private _longPressTimer: number | undefined;
 
     // State for tracking double taps
@@ -98,6 +98,8 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
                 tabIndex={ this.props.tabIndex }
                 ref={ this._setContainerRef }
                 onMouseDown={ this._onMouseDown }
+                onTouchStart={ this._onTouchStart }
+                onTouchEnd={ this._onTouchEnd }
                 onClick={ this._onClick }
                 onWheel={ this._onWheel }
                 onFocus={ this.props.onFocus }
@@ -268,7 +270,20 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
             this._startLongPressTimer(e);
         }
     }
+    private _onTouchStart = (e: React.TouchEvent<any>) => {
+        if (this.props.onPan || this.props.onPanHorizontal || this.props.onPanVertical) {
+            // Disable mousedown default action that initiates a drag/drop operation and breaks panning with a not-allowed cursor.
+            // https://w3c.github.io/uievents/#mousedown
+            e.preventDefault();
+        }
 
+        if (this.props.onLongPress) {
+            this._startLongPressTimer(e);
+        }
+    }
+    private _onTouchEnd = (e: React.TouchEvent<any>) => {
+        this._cancelLongPressTimer();
+    }
     private _onClick = (e: React.MouseEvent<any>) => {
         this._cancelLongPressTimer();
 
@@ -427,10 +442,10 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
 
         return (timeStamp - this._lastTapEvent.timeStamp.valueOf() <= _doubleTapDurationThreshold &&
             this._calcDistance(this._lastTapEvent.pageX - pageX, this._lastTapEvent.pageY - pageY) <=
-                _doubleTapPixelThreshold);
+            _doubleTapPixelThreshold);
     }
 
-    private _startLongPressTimer(event: React.MouseEvent<any>) {
+    private _startLongPressTimer(event: React.MouseEvent<any> | React.TouchEvent<any> ) {
         event.persist();
 
         this._pendingLongPressEvent = event;
@@ -478,16 +493,29 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
 
     private _reportLongPress() {
         if (this.props.onLongPress) {
-            const tapEvent: Types.TapGestureState = {
-                pageX: this._pendingLongPressEvent!.pageX,
-                pageY: this._pendingLongPressEvent!.pageY,
-                clientX: this._pendingLongPressEvent!.clientX,
-                clientY: this._pendingLongPressEvent!.clientY,
-                timeStamp: this._pendingLongPressEvent!.timeStamp,
-                isTouch: false
-            };
 
-            this.props.onLongPress(tapEvent);
+            if (!this._pendingLongPressEvent || 'pageX' in this._pendingLongPressEvent) {
+                const tapEvent: Types.TapGestureState = {
+                    pageX: this._pendingLongPressEvent!.pageX,
+                    pageY: this._pendingLongPressEvent!.pageY,
+                    clientX: this._pendingLongPressEvent!.clientX,
+                    clientY: this._pendingLongPressEvent!.clientY,
+                    timeStamp: this._pendingLongPressEvent!.timeStamp,
+                    isTouch: false
+                };
+                this.props.onLongPress(tapEvent);
+            } else {
+                const tapEvent: Types.TapGestureState = {
+                    pageX: this._pendingLongPressEvent.targetTouches[0].pageX,
+                    pageY: this._pendingLongPressEvent.targetTouches[0].pageY,
+                    clientX: this._pendingLongPressEvent.targetTouches[0].clientX,
+                    clientY: this._pendingLongPressEvent.targetTouches[0].clientY,
+                    timeStamp: this._pendingLongPressEvent.timeStamp,
+                    isTouch: false
+                };
+                this.props.onLongPress(tapEvent);
+            }
+
         }
 
         this._pendingLongPressEvent = undefined;
@@ -557,7 +585,7 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
                 break;
 
             default:
-                // do nothing;
+            // do nothing;
         }
 
         // we need to clean taps in case there was a pan event in the meantime

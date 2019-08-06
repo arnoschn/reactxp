@@ -43,7 +43,7 @@ type ReactNativeViewAndImageCommonStyle<Style extends RX.Types.ViewAndImageCommo
 
 export class Styles extends RX.Styles {
     combine<S>(ruleSet1: RX.Types.StyleRuleSetRecursive<S> | undefined, ruleSet2?: RX.Types.StyleRuleSetRecursive<S>)
-            : RX.Types.StyleRuleSetOrArray<S> | undefined {
+        : RX.Types.StyleRuleSetOrArray<S> | undefined {
         if (!ruleSet1 && !ruleSet2) {
             return undefined;
         }
@@ -126,7 +126,7 @@ export class Styles extends RX.Styles {
         return this._adaptStyles(ruleSet, cacheStyle);
     }
 
-     // Creates animated opaque styles that can be used for Image
+    // Creates animated opaque styles that can be used for Image
     createAnimatedImageStyle(ruleSet: RX.Types.AnimatedImageStyle): RX.Types.AnimatedImageStyleRuleSet {
         return this._adaptAnimatedStyles(ruleSet);
     }
@@ -141,7 +141,7 @@ export class Styles extends RX.Styles {
         return this._adaptStyles(ruleSet, cacheStyle);
     }
 
-    getCssPropertyAliasesCssStyle(): {[key: string]: string} {
+    getCssPropertyAliasesCssStyle(): { [key: string]: string } {
         // Nothing to do in native; this is for web only
         return {};
     }
@@ -216,7 +216,9 @@ export class Styles extends RX.Styles {
                 adaptedRuleSet.flexShrink = 0;
             }
         }
-
+        if (def.width === - 100) {
+            def.width = undefined;
+        }
         if (cacheStyle) {
             return RN.StyleSheet.create({ _style: adaptedRuleSet })._style;
         }

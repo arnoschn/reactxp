@@ -36,8 +36,8 @@ export class Styles extends RX.Styles {
             // always override the general.
             // https://github.com/necolas/react-native-web/blob/0.10.0/docs/guides/style.md#how-styles-are-resolved
             if ((combinedStyles.marginLeft !== undefined || combinedStyles.marginRight !== undefined ||
-                    combinedStyles.marginTop !== undefined || combinedStyles.marginBottom !== undefined) &&
-                    combinedStyles.margin !== undefined) {
+                combinedStyles.marginTop !== undefined || combinedStyles.marginBottom !== undefined) &&
+                combinedStyles.margin !== undefined) {
                 if (combinedStyles.marginLeft === undefined) {
                     combinedStyles.marginLeft = combinedStyles.margin;
                 }
@@ -54,8 +54,8 @@ export class Styles extends RX.Styles {
             }
 
             if ((combinedStyles.paddingLeft !== undefined || combinedStyles.paddingRight !== undefined ||
-                    combinedStyles.paddingTop !== undefined || combinedStyles.paddingBottom !== undefined) &&
-                    combinedStyles.padding !== undefined) {
+                combinedStyles.paddingTop !== undefined || combinedStyles.paddingBottom !== undefined) &&
+                combinedStyles.padding !== undefined) {
                 if (combinedStyles.paddingLeft === undefined) {
                     combinedStyles.paddingLeft = combinedStyles.padding;
                 }
@@ -72,8 +72,8 @@ export class Styles extends RX.Styles {
             }
 
             if (combinedStyles.borderWidth ||
-                    combinedStyles.borderTopWidth || combinedStyles.borderRightWidth ||
-                    combinedStyles.borderBottomWidth || combinedStyles.borderLeftWidth) {
+                combinedStyles.borderTopWidth || combinedStyles.borderRightWidth ||
+                combinedStyles.borderBottomWidth || combinedStyles.borderLeftWidth) {
                 // If the caller specified a non-zero border width
                 // but no border color or style, set the defaults to
                 // match those of React Native platforms.
@@ -246,7 +246,7 @@ export class Styles extends RX.Styles {
         return aliases;
     });
 
-    getCssPropertyAliasesCssStyle(): {[key: string]: string} {
+    getCssPropertyAliasesCssStyle(): { [key: string]: string } {
         return this._cssPropertyAliasesCssStyle();
     }
 
@@ -480,6 +480,9 @@ export class Styles extends RX.Styles {
         // Add IE-specific word wrap property.
         if (def.wordBreak === 'break-word') {
             def.wordWrap = 'break-word';
+        }
+        if (def.width === - 100) {
+            def.width = 'fit-content';
         }
 
         return AppConfig.isDevelopmentMode() ? Object.freeze(def) : def;

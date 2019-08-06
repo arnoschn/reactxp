@@ -14,6 +14,8 @@
   "dependencies": {
     "lodash": "^4.17.14",
     "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "rebound": "^0.1.0",
     "subscribableevent": "^1.0.1",
     "synctasks": "^0.3.3"
