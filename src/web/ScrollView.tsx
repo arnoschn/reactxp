@@ -288,14 +288,21 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
 
     private _renderWithCustomScrollbar() {
         let containerStyles: any = _customStyles.customScrollContainer;
-
+        let scrollStyle: any = this._getContainerStyle() as any;
         const scrollComponentClassNames = ['scrollViewport'];
         if (this.props.horizontal) {
             scrollComponentClassNames.push('scrollViewportH');
         }
         if (this.props.vertical || this.props.vertical === undefined) {
             scrollComponentClassNames.push('scrollViewportV');
-            containerStyles = _.extend({}, _customStyles.customScrollVertical, containerStyles);
+            if (!this.props.horizontal) {
+                containerStyles = _.extend({}, _customStyles.customScrollVertical, containerStyles);
+            } else {
+                scrollStyle = _.extend({}, {display: 'block'}, scrollStyle);
+                console.log(scrollStyle);
+                debugger;
+            }
+
         }
 
         return (
@@ -310,7 +317,7 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
                     role={ 'none' }
                     className={ scrollComponentClassNames.join(' ') }
                     onScroll={ this._onScroll }
-                    style={ this._getContainerStyle() as any }
+                    style={ scrollStyle }
                     onKeyDown={ this.props.onKeyPress }
                     onFocus={ this.props.onFocus }
                     onBlur={ this.props.onBlur }
