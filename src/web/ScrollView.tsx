@@ -298,9 +298,8 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
             if (!this.props.horizontal) {
                 containerStyles = _.extend({}, _customStyles.customScrollVertical, containerStyles);
             } else {
-                scrollStyle = _.extend({}, {display: 'block'}, scrollStyle);
-                console.log(scrollStyle);
-                debugger;
+                scrollStyle = _.extend({}, scrollStyle,{display: 'block'});
+               
             }
 
         }
