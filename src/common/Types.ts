@@ -527,7 +527,7 @@ export interface Headers {
 }
 
 // Image
-export type ImageResizeMode = 'stretch' | 'contain' | 'cover' | 'auto' | 'repeat';
+export type ImageResizeMode = 'stretch' | 'contain' | 'cover' | 'auto' | 'repeat' | '100% 100%';
 
 export interface ImagePropsShared<C = React.Component> extends CommonProps<C> {
     source: string;
@@ -544,6 +544,7 @@ export interface ImagePropsShared<C = React.Component> extends CommonProps<C> {
 
 export interface ImageProps extends ImagePropsShared<RX.Image> {
     style?: StyleRuleSetRecursive<ImageStyleRuleSet>;
+    onMouseMove?: (e: React.MouseEvent<any>) => void;
 }
 
 export interface ImageMetadata {
@@ -577,7 +578,7 @@ export interface TextPropsShared<C = React.Component> extends CommonProps<C> {
 
     // iOS and Android only
     ellipsizeMode?:  'head' | 'middle' | 'tail';
-
+    className?: string;
     // Exposing this property as temporary workaround to fix a bug.
     // TODO : http://skype.vso.io/865016 : remove this exposed property
     // Used only for Android.
@@ -661,6 +662,7 @@ export interface ViewPropsShared<C = React.Component> extends CommonProps<C>, Co
     onPress?: (e: SyntheticEvent) => void;
     onLongPress?: (e: SyntheticEvent) => void;
     onKeyPress?: (e: KeyboardEvent) => void;
+    onKeyUp?: (e: KeyboardEvent) => void;
     onFocus?: (e: FocusEvent) => void;
     onBlur?: (e: FocusEvent) => void;
 
@@ -791,7 +793,9 @@ export interface GestureViewProps extends CommonStyledProps<ViewStyleRuleSet, RX
     onDoubleTap?: (gestureState: TapGestureState) => void;
     onLongPress?: (gestureState: TapGestureState) => void;
     onContextMenu?: (gestureState: TapGestureState) => void;
-
+    onTouchMove?: (e: React.TouchEvent<any>) => void;
+    onTouchStart?: (e: React.TouchEvent<any>) => void;
+    onTouchEnd?: (e: React.TouchEvent<any>) => void;
     onFocus?: (e: FocusEvent) => void;
     onBlur?: (e: FocusEvent) => void;
     onKeyPress?: (e: KeyboardEvent) => void;
@@ -834,7 +838,7 @@ export interface ScrollViewProps extends CommonStyledProps<ScrollViewStyleRuleSe
     showsHorizontalScrollIndicator?: boolean;
     showsVerticalScrollIndicator?: boolean;
     scrollEnabled?: boolean;
-
+    autoFocus?: boolean;
     // The following props are valid only on native platforms and
     // have no meaning on the web implementation.
     keyboardDismissMode?: 'none' | 'interactive' | 'on-drag';
@@ -882,6 +886,9 @@ export interface ScrollViewProps extends CommonStyledProps<ScrollViewStyleRuleSe
     // a native-side/-backed coupled animation.
     scrollXAnimatedValue?: RX.Types.AnimatedValue;
     scrollYAnimatedValue?: RX.Types.AnimatedValue;
+    useCustomScrollbars?: boolean;
+    useCustomScrollbarVertical?: boolean;
+    useCustomScrollbarHorizontal?: boolean;
 }
 
 // Link

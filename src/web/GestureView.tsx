@@ -100,6 +100,7 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
                 onMouseDown={ this._onMouseDown }
                 onTouchStart={ this._onTouchStart }
                 onTouchEnd={ this._onTouchEnd }
+                onTouchMove={ this.props.onTouchMove! }
                 onClick={ this._onClick }
                 onWheel={ this._onWheel }
                 onFocus={ this.props.onFocus }
@@ -168,6 +169,7 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
 
                 return false;
             },
+
             onMove: (event: MouseEvent, gestureState: Types.PanGestureState) => {
                 this._pendingGestureType = this._detectGestureType(gestureState);
                 if (this._pendingGestureType !== GestureType.None) {
@@ -274,16 +276,24 @@ export class GestureView extends React.Component<Types.GestureViewProps, Types.S
         if (this.props.onPan || this.props.onPanHorizontal || this.props.onPanVertical) {
             // Disable mousedown default action that initiates a drag/drop operation and breaks panning with a not-allowed cursor.
             // https://w3c.github.io/uievents/#mousedown
-            e.preventDefault();
-        }
 
+               e.preventDefault();
+
+        }
+        if (this.props.onTouchStart) {
+            this.props.onTouchStart(e);
+        }
         if (this.props.onLongPress) {
             this._startLongPressTimer(e);
         }
     }
     private _onTouchEnd = (e: React.TouchEvent<any>) => {
+        if (this.props.onTouchEnd) {
+            this.props.onTouchEnd(e);
+        }
         this._cancelLongPressTimer();
     }
+
     private _onClick = (e: React.MouseEvent<any>) => {
         this._cancelLongPressTimer();
 

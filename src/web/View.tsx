@@ -378,6 +378,7 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
             onFocus: this.props.onFocus,
             onBlur: this.props.onBlur,
             onKeyDown: this.props.onKeyPress,
+            onKeyUp: this.props.onKeyUp,
             id: this.props.id
         };
 

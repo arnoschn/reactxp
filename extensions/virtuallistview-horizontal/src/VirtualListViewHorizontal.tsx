@@ -1261,7 +1261,7 @@ export class VirtualListViewHorizontal<ItemInfo extends VirtualListViewItemInfo>
             if (Array.isArray(this.props.style)) {
                 staticContainerStyle = staticContainerStyle.concat(this.props.style as RX.Types.ViewStyleRuleSet[]);
             } else {
-                staticContainerStyle.push(this.props.style as RX.Types.ViewStyleRuleSet);
+                staticContainerStyle.push(this.props.style);
             }
         }
 

@@ -22,7 +22,9 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
         implements RX.ScrollView {
     private _scrollTop = 0;
     private _scrollLeft = 0;
-
+    getContainer(): any {
+        return null;
+    }
     protected _render(nativeProps: RN.ScrollViewProps & React.Props<RN.ScrollView>): JSX.Element {
         if (this.props.scrollXAnimatedValue || this.props.scrollYAnimatedValue) {
             // Have to jump over to an Animated ScrollView to use an RN.Animated.event...

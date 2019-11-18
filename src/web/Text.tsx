@@ -87,6 +87,7 @@ export class Text extends TextBase {
             return (
                 <div
                     ref={ this._onMount }
+                    className={ this.props.className }
                     style={ this._getStyles() as any }
                     aria-hidden={ isAriaHidden }
                     onClick={ this.props.onPress }
@@ -105,6 +106,7 @@ export class Text extends TextBase {
                 <div
                     ref={ this._onMount }
                     style={ this._getStyles() as any }
+                    className={ this.props.className }
                     aria-hidden={ isAriaHidden }
                     onClick={ this.props.onPress }
                     onContextMenu={ this.props.onContextMenu }

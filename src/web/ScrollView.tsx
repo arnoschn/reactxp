@@ -10,12 +10,13 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import { FocusArbitratorProvider } from '../common/utils/AutoFocusHelper';
 import * as RX from '../common/Interfaces';
 import Timers from '../common/utils/Timers';
 
 import CustomScrollbar from './CustomScrollbar';
 import * as _ from './utils/lodashMini';
-import ScrollViewConfig from './ScrollViewConfig';
+//import ScrollViewConfig from './ScrollViewConfig';
 import Styles from './Styles';
 import ViewBase from './ViewBase';
 
@@ -106,8 +107,8 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
                 // The display needs to be set to flex, otherwise the scrollview incorrectly shows up vertically.
                 display: 'flex',
                 overflowX: 'scroll',
-                paddingBottom: 30 - nativeScrollbarWidth,
-                marginBottom: -30,
+                //paddingBottom: 30 - nativeScrollbarWidth,
+                //marginBottom: -30,
                 // Fixes a bug for Chrome beta where the parent flexbox (customScrollContainer) doesn't
                 // recognize that its child got populated with items. Smallest default width gives an
                 // indication that content will exist here.
@@ -147,12 +148,28 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
     componentWillMount() {
         this._onPropsChange(this.props);
     }
+    requestFocus() {
+        FocusArbitratorProvider.requestFocus(
+            this,
+            () => this.focus(),
+            () => this._isMounted
+        );
+    }
 
+    focus() {
+        const el = this._getContainer();
+        if (el) {
+            el.focus();
+        }
+    }
     componentDidMount() {
         super.componentDidMount();
         this._mounted = true;
 
         this._createCustomScrollbarsIfNeeded(this.props);
+        if (this.props.autoFocus) {
+            this.requestFocus();
+        }
     }
 
     componentWillReceiveProps(newProps: RX.Types.ScrollViewProps) {
@@ -173,7 +190,9 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
     protected _getContainer(): HTMLElement | null {
         return this._mountedComponent;
     }
-
+    getContainer(): HTMLElement | null {
+        return this._mountedComponent;
+    }
     // Throttled scroll handler
     private _onScroll = _.throttle((e: React.SyntheticEvent<any>) => {
         if (!this._mounted) {
@@ -214,7 +233,7 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
     }, (this.props.scrollEventThrottle || _defaultScrollThrottleValue), { leading: true, trailing: true });
 
     private _onPropsChange(props: RX.Types.ScrollViewProps) {
-        this._customScrollbarEnabled = ScrollViewConfig.useCustomScrollbars();
+        this._customScrollbarEnabled = props.useCustomScrollbars || props.useCustomScrollbarHorizontal || props.useCustomScrollbarVertical || false;
 
         // If we're turning on custom scrollbars or toggling vertical and/or horizontal, we need to re-create
         // the scrollbar.
@@ -224,7 +243,8 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
     private _createCustomScrollbarsIfNeeded(props: RX.Types.ScrollViewProps) {
         if (this._mounted && this._customScrollbarEnabled) {
             if (this._customScrollbar) {
-                if (this.props.horizontal === props.horizontal &&
+                if (
+                    this.props.horizontal === props.horizontal &&
                     this.props.vertical === props.vertical &&
                     this.props.showsHorizontalScrollIndicator === props.showsHorizontalScrollIndicator &&
                     this.props.showsVerticalScrollIndicator === props.showsVerticalScrollIndicator) {
@@ -292,17 +312,25 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
         const scrollComponentClassNames = ['scrollViewport'];
         if (this.props.horizontal) {
             scrollComponentClassNames.push('scrollViewportH');
+
         }
         if (this.props.vertical || this.props.vertical === undefined) {
             scrollComponentClassNames.push('scrollViewportV');
             if (!this.props.horizontal) {
                 containerStyles = _.extend({}, _customStyles.customScrollVertical, containerStyles);
             } else {
-                scrollStyle = _.extend({}, scrollStyle,{display: 'block'});
-               
+                scrollStyle = _.extend({}, scrollStyle, {height: '100%', display: 'block'});
+                containerStyles = _.extend({}, containerStyles, {height: '100%'});
+
             }
 
         }
+        if ('height' in scrollStyle && !this.props.vertical) {
+          //  containerStyles.height = scrollStyle.height;
+            //containerStyles.overflow = 'initial';
+            containerStyles = _.extend({}, containerStyles, {overflow: 'initial', height: scrollStyle.height});
+        }
+        //debugger;
 
         return (
             <div

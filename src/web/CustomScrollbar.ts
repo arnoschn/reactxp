@@ -273,10 +273,12 @@ export class Scrollbar {
     private _updateSliders() {
         if (this._hasHorizontal) {
             // Read from DOM before we write back
+            //debugger;
             const newSliderWidth = this._horizontalBar.sliderSize + UNIT;
             const newSliderLeft = this._viewport.scrollLeft * this._horizontalBar.scroll2Slider! + UNIT;
             this._horizontalBar.slider!.style.width = newSliderWidth;
             this._horizontalBar.slider!.style.left = newSliderLeft;
+
         }
 
         if (this._hasVertical) {
@@ -289,15 +291,17 @@ export class Scrollbar {
     }
 
     private _handleDrag(e: React.MouseEvent<any>) {
+
         if (this._dragIsVertical) {
             this._viewport.scrollTop = (e.pageY - this._verticalBar.dragOffset!) * this._verticalBar.slider2Scroll!;
         } else {
-            this._viewport.scrollLeft = (e.pageX - this._horizontalBar.dragOffset!) * this._horizontalBar.slider2Scroll!;
+             this._viewport.scrollLeft = (e.pageX - this._horizontalBar.dragOffset!) * this._horizontalBar.slider2Scroll! ;
         }
     }
 
     private _startDrag(dragIsVertical: boolean, e: React.MouseEvent<any>) {
         if (!this._dragging) {
+
             window.addEventListener('mouseup', this._stopDragCallback);
             window.addEventListener('mousemove', this._handleDragCallback);
             this._container.classList.add('scrolling');
@@ -438,7 +442,7 @@ export class Scrollbar {
         }
     }
 
-    private _calcNewBarSize(bar: ScrollbarInfo, newSize: number, newScrollSize: number, hasBoth: boolean) {
+    private _calcNewBarSize(bar: ScrollbarInfo, newSize: number, newScrollSize: number, hasBoth: boolean, available: number, scrollSpace: number) {
         if (hasBoth || this._hasHiddenScrollbar) {
             newSize -= SCROLLER_NEGATIVE_MARGIN;
             newScrollSize -= SCROLLER_NEGATIVE_MARGIN - Scrollbar.getNativeScrollbarWidth();
@@ -462,16 +466,25 @@ export class Scrollbar {
             } else {
                 bar.slider2Scroll = newScrollSize / newSize;
             }
+            if (available >= scrollSpace - SCROLLER_NEGATIVE_MARGIN) {
+                bar.rail!.style.display = 'none';
+                bar.slider!.style.display = 'none';
+            } else {
+                bar.rail!.style.display = '';
+                bar.slider!.style.display = '';
+            }
         }
     }
 
     private _resize() {
         if (this._hasHorizontal) {
-            this._calcNewBarSize(this._horizontalBar, this._viewport.offsetWidth, this._viewport.scrollWidth, this._hasVertical);
+            this._calcNewBarSize(this._horizontalBar, this._viewport.offsetWidth - this._horizontalBar.rail!.offsetLeft - this._horizontalBar.slider!.clientWidth / 2, this._viewport.scrollWidth, this._hasVertical, this._viewport.offsetWidth, this._viewport.scrollWidth);
+
         }
 
         if (this._hasVertical) {
-            this._calcNewBarSize(this._verticalBar, this._viewport.offsetHeight, this._viewport.scrollHeight, this._hasHorizontal);
+
+            this._calcNewBarSize(this._verticalBar, this._viewport.offsetHeight, this._viewport.scrollHeight, this._hasHorizontal, this._viewport.offsetHeight, this._viewport.scrollHeight);
         }
     }
 
