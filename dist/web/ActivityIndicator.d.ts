@@ -18,6 +18,6 @@ export declare class ActivityIndicator extends React.Component<Types.ActivityInd
     constructor(props: Types.ActivityIndicatorProps);
     componentDidMount(): void;
     componentWillUnmount(): void;
-    render(): any;
+    render(): JSX.Element;
 }
 export default ActivityIndicator;

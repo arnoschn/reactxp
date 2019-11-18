@@ -18,7 +18,7 @@ export declare class AccessibilityAnnouncer extends React.Component<{}, Accessib
     private _getInitialState;
     componentDidUpdate(prevProps: {}, prevState: AccessibilityAnnouncerState): void;
     componentWillUnmount(): void;
-    render(): any;
+    render(): JSX.Element;
     private _cancelClearAnnouncementTimer;
     private _startClearAnnouncementTimer;
 }

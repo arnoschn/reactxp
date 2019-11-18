@@ -8,6 +8,7 @@
  * implemented for each platform.
  */
 import * as React from 'react';
+import SubscribableEvent from 'subscribableevent';
 import * as SyncTasks from 'synctasks';
 import * as Types from './Types';
 export { Types };
@@ -36,8 +37,8 @@ export declare abstract class App {
     supportsExperimentalKeyboardNavigation: boolean;
     initialize(debug: boolean, development: boolean): void;
     abstract getActivationState(): Types.AppActivationState;
-    activationStateChangedEvent: any;
-    memoryWarningEvent: any;
+    activationStateChangedEvent: SubscribableEvent<(state: Types.AppActivationState) => void>;
+    memoryWarningEvent: SubscribableEvent<() => void>;
 }
 export declare abstract class UserInterface {
     abstract setMainView(element: React.ReactElement<any>): void;
@@ -49,13 +50,13 @@ export declare abstract class UserInterface {
     abstract measureLayoutRelativeToAncestor(component: React.Component<any>, ancestor: React.Component<any>): SyncTasks.Promise<Types.LayoutInfo>;
     abstract measureWindow(rootViewId?: string): Types.Dimensions;
     abstract getContentSizeMultiplier(): SyncTasks.Promise<number>;
-    contentSizeMultiplierChangedEvent: any;
+    contentSizeMultiplierChangedEvent: SubscribableEvent<(multiplier: number) => void>;
     abstract setMaxContentSizeMultiplier(maxContentSizeMultiplier: number): void;
     abstract dismissKeyboard(): void;
     abstract enableTouchLatencyEvents(latencyThresholdMs: number): void;
-    touchLatencyEvent: any;
+    touchLatencyEvent: SubscribableEvent<(observedLatencyMs: number) => void>;
     abstract isNavigatingWithKeyboard(): boolean;
-    keyboardNavigationEvent: any;
+    keyboardNavigationEvent: SubscribableEvent<(isNavigatingWithKeyboard: boolean) => void>;
 }
 export declare abstract class Modal {
     abstract isDisplayed(modalId?: string): boolean;
@@ -72,7 +73,7 @@ export declare abstract class Popup {
 }
 export declare abstract class Linking {
     abstract getInitialUrl(): SyncTasks.Promise<string | undefined>;
-    deepLinkRequestEvent: any;
+    deepLinkRequestEvent: SubscribableEvent<(url: string) => void>;
     abstract openUrl(url: string): SyncTasks.Promise<void>;
     abstract launchSms(smsData: Types.SmsInfo): SyncTasks.Promise<void>;
     abstract launchEmail(emailData: Types.EmailInfo): SyncTasks.Promise<void>;
@@ -82,8 +83,8 @@ export declare abstract class Accessibility {
     abstract isScreenReaderEnabled(): boolean;
     abstract isHighContrastEnabled(): boolean;
     abstract announceForAccessibility(announcement: string): void;
-    screenReaderChangedEvent: any;
-    highContrastChangedEvent: any;
+    screenReaderChangedEvent: SubscribableEvent<(isEnabled: boolean) => void>;
+    highContrastChangedEvent: SubscribableEvent<(isEnabled: boolean) => void>;
 }
 export interface FocusableComponent {
     focus(): void;
@@ -136,7 +137,7 @@ export interface LocationConfiguration {
 export declare abstract class Network {
     abstract isConnected(): SyncTasks.Promise<boolean>;
     abstract getType(): SyncTasks.Promise<Types.DeviceNetworkType>;
-    connectivityChangedEvent: any;
+    connectivityChangedEvent: SubscribableEvent<(isConnected: boolean) => void>;
 }
 export declare abstract class Platform {
     abstract getType(): Types.PlatformType;
@@ -145,9 +146,9 @@ export declare abstract class Platform {
     }): T | undefined;
 }
 export declare abstract class Input {
-    backButtonEvent: any;
-    keyDownEvent: any;
-    keyUpEvent: any;
+    backButtonEvent: SubscribableEvent<() => boolean>;
+    keyDownEvent: SubscribableEvent<(e: Types.KeyboardEvent) => boolean>;
+    keyUpEvent: SubscribableEvent<(e: Types.KeyboardEvent) => boolean>;
 }
 export interface ScrollViewConstructor {
     new (props: Types.ScrollViewProps): ScrollView;
@@ -205,7 +206,7 @@ export declare abstract class TextInput extends React.Component<Types.TextInputP
 }
 export declare abstract class UserPresence {
     abstract isUserPresent(): boolean;
-    userPresenceChangedEvent: any;
+    userPresenceChangedEvent: SubscribableEvent<(isPresent: boolean) => void>;
 }
 export declare abstract class ViewBase<P, S = {}> extends React.Component<P, S> {
 }

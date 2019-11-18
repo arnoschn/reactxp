@@ -24,7 +24,7 @@ export declare class Text extends TextBase {
     getChildContext(): {
         isRxParentAText: boolean;
     };
-    render(): any;
+    render(): JSX.Element;
     componentDidMount(): void;
     private _onMount;
     private _getStyles;

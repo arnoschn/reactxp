@@ -16,6 +16,6 @@ export interface PopupContainerViewProps extends PopupContainerViewBaseProps<Pop
 }
 export declare class PopupContainerView extends PopupContainerViewBase<PopupContainerViewProps, Types.Stateless, PopupContainerView> {
     constructor(props: PopupContainerViewProps, context?: PopupContainerViewContext);
-    render(): any;
+    render(): JSX.Element;
 }
 export default PopupContainerView;

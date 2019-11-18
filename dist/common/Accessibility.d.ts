@@ -6,12 +6,13 @@
  *
  * Common wrapper for accessibility helper exposed from ReactXP.
  */
+import SubscribableEvent from 'subscribableevent';
 import * as RX from '../common/Interfaces';
 export declare abstract class Accessibility extends RX.Accessibility {
     abstract isScreenReaderEnabled(): boolean;
-    screenReaderChangedEvent: any;
+    screenReaderChangedEvent: SubscribableEvent<(isEnabled: boolean) => void>;
     isHighContrastEnabled(): boolean;
-    newAnnouncementReadyEvent: any;
+    newAnnouncementReadyEvent: SubscribableEvent<(announcement: string) => void>;
     announceForAccessibility(announcement: string): void;
 }
 export default Accessibility;

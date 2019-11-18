@@ -10,6 +10,6 @@ import * as React from 'react';
 import { Types } from '../common/Interfaces';
 export declare class ModalContainer extends React.Component<Types.CommonProps<ModalContainer>, Types.Stateless> {
     constructor(props: Types.CommonProps<ModalContainer>);
-    render(): any;
+    render(): JSX.Element;
 }
 export default ModalContainer;

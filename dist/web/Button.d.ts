@@ -6,6 +6,7 @@
  *
  * Web-specific implementation of the cross-platform Button abstraction.
  */
+/// <reference types="react" />
 import * as PropTypes from 'prop-types';
 import { FocusArbitratorProvider } from '../common/utils/AutoFocusHelper';
 import { Button as ButtonBase, Types } from '../common/Interfaces';
@@ -32,7 +33,7 @@ export declare class Button extends ButtonBase {
     private _isHoverStarted;
     constructor(props: Types.ButtonProps, context?: ButtonContext);
     getChildContext(): ButtonContext;
-    render(): any;
+    render(): JSX.Element;
     componentDidMount(): void;
     requestFocus(): void;
     focus(): void;
